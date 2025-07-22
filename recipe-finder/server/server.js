@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const recipeRoutes = require('./services/recipeService');
+const recipeRoutes = require('./services/recipeService.js');  // Add .js extension
 
 const app = express();
 app.use(cors());
