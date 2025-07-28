@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const categoryButtons = document.querySelectorAll('.category-btn');
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
@@ -6,38 +6,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
 
-    // Public API endpoint that doesn't require authentication
-    const API_URL = 'https://newsapi.org/v2/top-headlines?country=us&apiKey=YOUR_API_KEY';
+    const API_KEY = 'bba49a03bb91fa372478a548741d0300'; // Replace this with your GNews.io API key for more results
+    const COUNTRY = 'us';
+    const LANGUAGE = 'en';
 
-    // For demonstration, we'll use a proxy to avoid CORS issues
-    // In production, you should set up your own backend
-    const PROXY_URL = 'https://api.allorigins.win/get?url=' + encodeURIComponent(API_URL);
+    // Initialize with general (world) news
+    fetchNews('world');
 
-    // Initialize with general news
-    fetchNews('general');
-
-    // Set up category buttons
     categoryButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove active class from all buttons
+        button.addEventListener('click', function () {
             categoryButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
             this.classList.add('active');
-            
             const category = this.dataset.category;
             fetchNews(category);
         });
     });
 
-    // Set up search functionality
-    searchBtn.addEventListener('click', function() {
+    searchBtn.addEventListener('click', function () {
         const searchTerm = searchInput.value.trim();
         if (searchTerm) {
             searchNews(searchTerm);
         }
     });
 
-    searchInput.addEventListener('keypress', function(e) {
+    searchInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             const searchTerm = searchInput.value.trim();
             if (searchTerm) {
@@ -47,16 +39,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function fetchNews(category) {
-        // Clear previous results and errors
         newsResults.innerHTML = '';
         hideError();
         showLoading();
 
         try {
-            // In a real app, you would use your own backend to call the NewsAPI
-            // This is just for demonstration with a public endpoint
-            const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=YOUR_API_KEY`);
-            
+            const response = await fetch(`https://gnews.io/api/v4/top-headlines?topic=${category}&lang=${LANGUAGE}&country=${COUNTRY}&apikey=${API_KEY}`);
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
             }
@@ -65,10 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             displayNews(data.articles);
         } catch (error) {
             console.error('Error fetching news:', error);
-            
-            // Fallback: Use mock data if API fails
-            useMockData(category);
-            // showError('Failed to fetch news. Showing sample data instead.');
+            showError('Failed to fetch news. Please try again later.');
         } finally {
             hideLoading();
         }
@@ -80,9 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading();
 
         try {
-            // In a real app, you would use your own backend to call the NewsAPI
-            const response = await fetch(`https://newsapi.org/v2/everything?q=${query}&apiKey=YOUR_API_KEY`);
-            
+            const response = await fetch(`https://gnews.io/api/v4/search?q=${query}&lang=${LANGUAGE}&country=${COUNTRY}&apikey=${API_KEY}`);
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
             }
@@ -115,13 +98,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const imageDiv = document.createElement('div');
         imageDiv.className = 'news-image';
-        imageDiv.style.backgroundImage = `url(${article.urlToImage || 'https://via.placeholder.com/400x200?text=No+Image'})`;
-        
+        imageDiv.style.backgroundImage = `url(${article.image || 'https://via.placeholder.com/400x200?text=No+Image'})`;
+
         const sourceSpan = document.createElement('span');
         sourceSpan.className = 'news-source';
-        sourceSpan.textContent = article.source.name || 'Unknown source';
+        sourceSpan.textContent = article.source?.name || 'Unknown source';
         imageDiv.appendChild(sourceSpan);
-        
+
         card.appendChild(imageDiv);
 
         const contentDiv = document.createElement('div');
@@ -152,10 +135,10 @@ document.addEventListener('DOMContentLoaded', function() {
         date.innerHTML = `<i class="far fa-clock"></i> ${formatDate(article.publishedAt)}`;
         metaDiv.appendChild(date);
 
-        if (article.author) {
+        if (article.source?.name) {
             const author = document.createElement('div');
             author.className = 'news-author';
-            author.innerHTML = `<i class="far fa-user"></i> ${article.author}`;
+            author.innerHTML = `<i class="far fa-user"></i> ${article.source.name}`;
             metaDiv.appendChild(author);
         }
 
@@ -184,33 +167,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function hideError() {
         errorElement.classList.add('hidden');
-    }
-
-    // Fallback function with mock data
-    function useMockData(category) {
-        const mockData = {
-            articles: [
-                {
-                    source: { name: "Mock News" },
-                    author: "John Doe",
-                    title: "Sample News Article About " + category.charAt(0).toUpperCase() + category.slice(1),
-                    description: "This is a sample news article description about " + category + ". In a real app, you would see actual news content here from the API.",
-                    url: "https://example.com",
-                    urlToImage: "https://via.placeholder.com/400x200?text=News+Image",
-                    publishedAt: new Date().toISOString()
-                },
-                {
-                    source: { name: "Mock News" },
-                    author: "Jane Smith",
-                    title: "Another Sample Article on " + category.charAt(0).toUpperCase() + category.slice(1),
-                    description: "Another example news item showing how the " + category + " category would display different content.",
-                    url: "https://example.com",
-                    urlToImage: "https://via.placeholder.com/400x200?text=News+Image",
-                    publishedAt: new Date().toISOString()
-                }
-            ]
-        };
-        
-        displayNews(mockData.articles);
     }
 });
