@@ -1,54 +1,30 @@
- News Aggregator Web App
+ News Pulse - Your Simple News App
+Live at: https://shekinah-ineza.github.io/Summative_web_infrastructure/
 
+**What This App Does**
+✔ Browse news in categories like Technology, Health, or Sports
+✔ Search for topics like "football" or "iPhone"
+✔ Read summaries with links to full articles
+✔ Works on phones and computers
 
-Quick Start
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/news-aggregator.git
-cd news-aggregator
-```
+**How We Built It** 
+1. The Structure (index.html)
+Buttons for each news category
 
-2. Open in browser:
-```bash
-# For Linux/Mac:
-open index.html
+**Search box**
 
-# For Windows:
-start index.html
-```
+Place for news cards to appear
 
- 📂 Project Structure
-```
-├── index.html          # Main application
-├── style.css           # Stylesheet
-├── script.js           # News fetching logic
-├── assets/             # Static assets
-│   ├── icons/          # App icons
-│   └── images/         # Default images
-└── README.md           # Documentation
-```
+2. The Style (style.css)
+Cards that flip up when hovered
 
- API Configuration
-The app uses NewsAPI's free tier:
-- No API key required for development
-- Rate limited to 100 requests/day
-- Categories: business, entertainment, general, health, science, sports, technology
+Clean layout that works on small screens
 
- Features in Detail
-- **Category Selection**: Browse news by topic
-- **Search Function**: Find specific news articles
-- **Article Cards**: Clean display with images and metadata
-- **Responsive Design**: Works on all devices
-- **Loading States**: Visual feedback during API calls
+Loading spinner animation
 
- Deployment
-Automatically deployed via GitHub Pages:
-1. Pushes to `main` branch trigger deployment
-2. Site updates within 1-2 minutes
-3. No build step required
+3. The Magic (script.js)
+Talks to the GNews API to get news
 
- License
-MIT License - Free to use and modify
+Turns API data into pretty cards
 
-
-
+Shows errors if something goes wrong
